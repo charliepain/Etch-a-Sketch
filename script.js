@@ -1,16 +1,17 @@
 const DRAWING_AREA_SIDE_LENGTH = 960;
-function loadDrawingBoard(sideLength) {
-    for (let i = 0; i < sideLength; i++) {
+// numberSquares refers to the number of squares on each side of the grid
+function loadDrawingBoard(numberSquares) {
+    for (let i = 0; i < numberSquares; i++) {
         const drawingArea = document.querySelector(".drawing-area");
         // Add rows
         const row = document.createElement("div");
         row.classList.add("row");
         drawingArea.appendChild(row);
         // Add squares for each row
-        for (let j = 0; j < sideLength; j++) {
+        for (let j = 0; j < numberSquares; j++) {
             const square = document.createElement("div");
             square.classList.add("square");
-            square.style.width = `${960 / sideLength}px`;
+            square.style.width = `${960 / numberSquares}px`;
             square.style.height = square.style.width;
             row.appendChild(square);
         }
@@ -21,36 +22,39 @@ function draw(e) {
     e.target.classList.add("drawn-on");
 }
 
-function askNewLength() {
-    let newLength;
+function askNewNumberSquares() {
+    let newNumberSquares;
     do {
-        newLength = prompt("Enter number of squares for the new grid."
+        newNumberSquares = prompt("Enter number of squares for the new grid."
             + " This will erase the current grid."
             + " The value entered must be an integer between 1 and 100.",
-        length
+        numberSquares
         );
-        // Validate length
-        if (newLength === null) return -1;
-        if (newLength !== "") newLength = Number(newLength);
-        console.log(!Number.isInteger(newLength));
-    } while (newLength === ""
-    || newLength === NaN
-    || !Number.isInteger(newLength)
-    || newLength < 1
-    || newLength > 100
+        // Validate numberSquares
+        if (newNumberSquares === null) return -1;
+        if (newNumberSquares !== "") {
+            newNumberSquares = Number(newNumberSquares);
+        }
+        console.log(!Number.isInteger(newNumberSquares));
+    } while (newNumberSquares === ""
+    || newNumberSquares === NaN
+    || !Number.isInteger(newNumberSquares)
+    || newNumberSquares < 1
+    || newNumberSquares > 100
     ) 
-    return newLength;
+    return newNumberSquares;
 }
 
-function updateDisplayedLength() {
-    const displayedLength = document.querySelector(".length");
-    displayedLength.textContent = `Number of squares per side: ${length}`;
+function updateDisplayedNumberSquares() {
+    const displayedNumberSquares = document.querySelector(".number-squares");
+    displayedNumberSquares.textContent = `Number of squares per side:`
+    + ` ${numberSquares}`;
 }
 
 // Variable containing the number of squares per side of the grid
-let length = 16;
-loadDrawingBoard(length);
-updateDisplayedLength();
+let numberSquares = 16;
+loadDrawingBoard(numberSquares);
+updateDisplayedNumberSquares();
 
 const drawingArea = document.querySelector(".drawing-area");
 // activate drawing
@@ -67,16 +71,16 @@ drawingArea.addEventListener("mouseup", (e) => {
     }
 });
 
-const setLengthButton = document.querySelector(".setLength");
-setLengthButton.addEventListener("click", (e) => {
-    lengthEntered = askNewLength();
-    if (lengthEntered === -1) return;
-    length = lengthEntered;
+const setNumberSquaresButton = document.querySelector(".set-number-squares");
+setNumberSquaresButton.addEventListener("click", (e) => {
+    numberSquaresEntered = askNewNumberSquares();
+    if (numberSquaresEntered === -1) return;
+    numberSquares = numberSquaresEntered;
     const drawingArea = document.querySelector(".drawing-area");
     // Delete current grid
     drawingArea.textContent = "";
     // Add new squares
-    loadDrawingBoard(length);
-    updateDisplayedLength(length);
+    loadDrawingBoard(numberSquares);
+    updateDisplayedNumberSquares(numberSquares);
 });
 
