@@ -19,7 +19,27 @@ function loadDrawingBoard(numberSquares) {
 }
 
 function draw(e) {
+    e.target.style.removeProperty("background-color");
     e.target.classList.add("drawn-on");
+}
+
+// This function is used to generate random rgb values for drawing
+// in random colors
+function generateRandomInteger(startRange, endRange) {
+    return Math.floor(Math.random() * (endRange - startRange + 1)
+        + startRange);
+}
+
+function drawRandomColors(e) {
+    const redValue = generateRandomInteger(0,255);
+    const greenValue = generateRandomInteger(0,255);
+    const blueValue = generateRandomInteger(0,255);
+    const randomColor = `rgb(${redValue} ${greenValue} ${blueValue})`;
+    e.target.style.backgroundColor = randomColor;
+}
+
+function drawGradual(e) {
+
 }
 
 function askNewNumberSquares() {
@@ -35,7 +55,6 @@ function askNewNumberSquares() {
         if (newNumberSquares !== "") {
             newNumberSquares = Number(newNumberSquares);
         }
-        console.log(!Number.isInteger(newNumberSquares));
     } while (newNumberSquares === ""
     || newNumberSquares === NaN
     || !Number.isInteger(newNumberSquares)
@@ -51,26 +70,40 @@ function updateDisplayedNumberSquares() {
     + ` ${numberSquares}`;
 }
 
+// Variable indicating the drawing mode, can be 
+// "normal", "random", "gradual"
+let drawingMode = "normal";
 // Variable containing the number of squares per side of the grid
 let numberSquares = 16;
 loadDrawingBoard(numberSquares);
 updateDisplayedNumberSquares();
 
+// Changing drawing modes
+let mode = document.querySelector(".mode");
+mode.addEventListener("click", (e) => {
+    if (e.target.hasAttribute("name")) {
+        drawingMode = e.target.classList[0];
+    }
+});
+
 const drawingArea = document.querySelector(".drawing-area");
 // activate drawing
 drawingArea.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("square")) {
-        e.target.classList.add("drawn-on");
-        drawingArea.addEventListener("mouseover", draw);
+        drawBasedOnMode = 
+        drawingMode === "normal"? draw :
+        drawingMode === "random"? drawRandomColors :
+        drawGradual; 
+        drawingArea.addEventListener("mouseover", drawBasedOnMode);
     }
 });
 // deactivate drawing
 drawingArea.addEventListener("mouseup", (e) => {
     if (e.target.classList.contains("square")) {
-        drawingArea.removeEventListener("mouseover", draw);
+        drawingArea.removeEventListener("mouseover", drawBasedOnMode);
     }
 });
-
+// Change number of squares on each side of grid
 const setNumberSquaresButton = document.querySelector(".set-number-squares");
 setNumberSquaresButton.addEventListener("click", (e) => {
     numberSquaresEntered = askNewNumberSquares();
