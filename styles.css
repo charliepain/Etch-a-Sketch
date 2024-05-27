@@ -21,6 +21,10 @@ body {
     box-sizing: border-box;
 }
 
+.drawn-on {
+    background-color: black;
+}
+
 .grid-lines {
     border: 1px dotted lightgray;
 }
