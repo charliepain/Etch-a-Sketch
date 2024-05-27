@@ -21,12 +21,42 @@ function draw(e) {
     e.target.classList.add("drawn-on");
 }
 
-loadDrawingBoard(16);
+function askNewLength() {
+    let newLength;
+    do {
+        newLength = prompt("Enter number of squares for the new grid."
+            + " This will erase the current grid."
+            + " The value entered must be an integer between 1 and 100.",
+        length
+        );
+        // Validate length
+        if (newLength === null) return -1;
+        if (newLength !== "") newLength = Number(newLength);
+        console.log(!Number.isInteger(newLength));
+    } while (newLength === ""
+    || newLength === NaN
+    || !Number.isInteger(newLength)
+    || newLength < 1
+    || newLength > 100
+    ) 
+    return newLength;
+}
+
+function updateDisplayedLength() {
+    const displayedLength = document.querySelector(".length");
+    displayedLength.textContent = `Number of squares per side: ${length}`;
+}
+
+// Variable containing the number of squares per side of the grid
+let length = 16;
+loadDrawingBoard(length);
+updateDisplayedLength();
 
 const drawingArea = document.querySelector(".drawing-area");
 // activate drawing
 drawingArea.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("square")) {
+        e.target.classList.add("drawn-on");
         drawingArea.addEventListener("mouseover", draw);
     }
 });
@@ -35,5 +65,18 @@ drawingArea.addEventListener("mouseup", (e) => {
     if (e.target.classList.contains("square")) {
         drawingArea.removeEventListener("mouseover", draw);
     }
-})
+});
+
+const setLengthButton = document.querySelector(".setLength");
+setLengthButton.addEventListener("click", (e) => {
+    lengthEntered = askNewLength();
+    if (lengthEntered === -1) return;
+    length = lengthEntered;
+    const drawingArea = document.querySelector(".drawing-area");
+    // Delete current grid
+    drawingArea.textContent = "";
+    // Add new squares
+    loadDrawingBoard(length);
+    updateDisplayedLength(length);
+});
 

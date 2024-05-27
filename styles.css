@@ -2,6 +2,10 @@ body {
     background-color: lightgray;
 }
 
+.state {
+    text-align: center;
+}
+
 .container {
     display: flex;
     justify-content: center;
