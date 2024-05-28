@@ -20,6 +20,7 @@ function loadDrawingBoard(numberSquares) {
 
 function draw(e) {
     e.target.style.removeProperty("background-color");
+    e.target.style.removeProperty("opacity");
     e.target.classList.add("drawn-on");
 }
 
@@ -31,15 +32,24 @@ function generateRandomInteger(startRange, endRange) {
 }
 
 function drawRandomColors(e) {
-    const redValue = generateRandomInteger(0,255);
-    const greenValue = generateRandomInteger(0,255);
-    const blueValue = generateRandomInteger(0,255);
+    const redValue = generateRandomInteger(0, 255);
+    const greenValue = generateRandomInteger(0, 255);
+    const blueValue = generateRandomInteger(0, 255);
     const randomColor = `rgb(${redValue} ${greenValue} ${blueValue})`;
     e.target.style.backgroundColor = randomColor;
 }
 
 function drawGradual(e) {
 
+    if (e.target.classList.contains("drawn-on")
+    && e.target.style.opacity !== "") {
+        newOpacity = `${Number(e.target.style.opacity) + 0.1}`;
+        e.target.style.opacity = newOpacity;
+    } else if (e.target.style.backgroundColor === ""
+        && !e.target.classList.contains("drawn-on")) {
+        e.target.classList.add("drawn-on");
+        e.target.style.opacity = "0.1";
+    }
 }
 
 function askNewNumberSquares() {
@@ -48,7 +58,7 @@ function askNewNumberSquares() {
         newNumberSquares = prompt("Enter number of squares for the new grid."
             + " This will erase the current grid."
             + " The value entered must be an integer between 1 and 100.",
-        numberSquares
+            numberSquares
         );
         // Validate numberSquares
         if (newNumberSquares === null) return -1;
@@ -59,15 +69,15 @@ function askNewNumberSquares() {
     || newNumberSquares === NaN
     || !Number.isInteger(newNumberSquares)
     || newNumberSquares < 1
-    || newNumberSquares > 100
-    ) 
+        || newNumberSquares > 100
+    )
     return newNumberSquares;
 }
 
 function updateDisplayedNumberSquares() {
     const displayedNumberSquares = document.querySelector(".number-squares");
     displayedNumberSquares.textContent = `Number of squares per side:`
-    + ` ${numberSquares}`;
+        + ` ${numberSquares}`;
 }
 
 // Variable indicating the drawing mode, can be 
@@ -90,10 +100,10 @@ const drawingArea = document.querySelector(".drawing-area");
 // activate drawing
 drawingArea.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("square")) {
-        drawBasedOnMode = 
-        drawingMode === "normal"? draw :
-        drawingMode === "random"? drawRandomColors :
-        drawGradual; 
+        drawBasedOnMode =
+            drawingMode === "normal" ? draw :
+                drawingMode === "random" ? drawRandomColors :
+                    drawGradual;
         drawingArea.addEventListener("mouseover", drawBasedOnMode);
     }
 });
